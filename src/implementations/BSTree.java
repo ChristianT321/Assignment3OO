@@ -2,10 +2,14 @@ package implementations;
 
 import utilities.BSTreeADT;
 import utilities.Iterator;
+
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
-public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E> {
+public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E>, Iterable<E>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private BSTreeNode<E> root;
     private int size;
@@ -65,6 +69,11 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E> {
         if (cmp == 0) return node;
         else if (cmp < 0) return searchRecursive(node.getLeft(), entry);
         else return searchRecursive(node.getRight(), entry);
+    }
+
+    public E get(E entry) {
+        BSTreeNode<E> node = search(entry);
+        return node != null ? node.getElement() : null;
     }
 
     @Override
@@ -183,6 +192,13 @@ public class BSTree<E extends Comparable<? super E>> implements BSTreeADT<E> {
             postorderRecursive(node.getRight(), list);
             list.add(node.getElement());
         }
+    }
+
+    @Override
+    public java.util.Iterator<E> iterator() {
+        LinkedList<E> list = new LinkedList<>();
+        inorderRecursive(root, list);
+        return list.iterator();
     }
 
     private class SimpleIterator implements Iterator<E> {
